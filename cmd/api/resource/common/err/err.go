@@ -30,3 +30,8 @@ func UnprocessableEntity(w http.ResponseWriter, err []byte) {
 	w.WriteHeader(http.StatusUnprocessableEntity)
 	w.Write(err)
 }
+
+func FailedDependency(w http.ResponseWriter, err []byte) {
+	w.WriteHeader(http.StatusFailedDependency)
+	w.Write(err)
+}
