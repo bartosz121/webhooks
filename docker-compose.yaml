@@ -1,0 +1,11 @@
+services:
+  webhooks-api:
+    image: webhooks-api:latest
+    container_name: webhooks-api
+    ports:
+      - 8080:8080
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
