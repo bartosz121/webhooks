@@ -121,33 +121,34 @@ func (h *DiscordHandler) GpwScraperWebhook(w http.ResponseWriter, r *http.Reques
 
 	defer r.Body.Close()
 	if err := json.NewDecoder(r.Body).Decode(webhookPayload); err != nil {
-		h.l.Error().Msg(err.Error())
+		h.l.Error().Err(err).Msg(err.Error())
 		errors.UnprocessableEntity(w, []byte(`{"error": "json error"}`))
 		return
 	}
 	h.l.Debug().Int64("espi_ebi_id", int64(webhookPayload.Id))
 
 	if err := h.v.Struct(webhookPayload); err != nil {
+		h.l.Error().Err(err).Msg(err.Error())
 		errors.UnprocessableEntity(w, []byte(`{"error": "unexpected json data"}`))
 		return
 	}
 
 	discordMsg, err := createDiscordMessageContent(webhookPayload)
 	if err != nil {
-		h.l.Error().Msg(err.Error())
+		h.l.Error().Err(err).Msg(err.Error())
 		errors.InternalServerError(w, []byte(`{"error": "internal server error"}`))
 		return
 	}
 
 	statusCode, responseBody, err := h.discordClient.SendMessage(h.apiConfig.GpwScraperWebhookDiscordChannelId, discordMsg)
 	if err != nil {
-		h.l.Error().Int("discord-response-status-code", statusCode).Msg(err.Error())
+		h.l.Error().Err(err).Int("discord-response-status-code", statusCode).Msg(err.Error())
 		errors.FailedDependency(w, []byte(`{"error": "error sending discord message"}`))
 		return
 	}
 
 	if statusCode != 200 {
-		h.l.Error().Int("discord-response-status-code", statusCode).Msg(responseBody)
+		h.l.Error().Err(err).Int("discord-response-status-code", statusCode).Msg(responseBody)
 		errors.FailedDependency(w, []byte(`{"error":`+fmt.Sprintf(`"error (%d) sending discord message"}`, statusCode)))
 		return
 	}
