@@ -67,10 +67,10 @@ func (t *GpwScraperDateTime) UnmarshalJSON(b []byte) error {
 func createDiscordMessageContent(data *GpwScraperWebhookData) (*discord.MessagePostBody, error) {
 	msg := &discord.MessagePostBody{}
 	contentMaxLength := DiscordMessageMaxLength - (BaseMessageLength + len(data.Type) + len(data.Company) + len(data.Title) + len(data.Source))
+	// FIXME: ugh modyfing fields here is dirty
+	data.Type = strings.ToUpper(data.Type)
 	if data.Description != nil && len(*data.Description) > contentMaxLength {
 		trimmedDescription := (*data.Description)[:contentMaxLength] + "..."
-		// FIXME: ugh modyfing those here is dirty
-		data.Type = strings.ToUpper(data.Type)
 		data.Description = &trimmedDescription
 	}
 
