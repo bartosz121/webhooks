@@ -45,7 +45,7 @@ type GpwScraperWebhookData struct {
 	Description *string            `json:"description"`
 	Company     string             `json:"company" validate:"required"`
 	Source      string             `json:"source" validate:"required"`
-	ParsedByLlm *string            `json:"parsedByLlm" validate:"required"`
+	ParsedByLlm *string            `json:"parsedByLlm"`
 	Date        GpwScraperDateTime `json:"date" validate:"required"`
 }
 
