@@ -125,7 +125,6 @@ func (h *DiscordHandler) GpwScraperWebhook(w http.ResponseWriter, r *http.Reques
 		errors.UnprocessableEntity(w, []byte(`{"error": "json error"}`))
 		return
 	}
-	h.l.Debug().Int64("espi_ebi_id", int64(webhookPayload.Id))
 
 	if err := h.v.Struct(webhookPayload); err != nil {
 		h.l.Error().Err(err).Msg(err.Error())
