@@ -5,6 +5,7 @@ import (
 	b64 "encoding/base64"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"strings"
 	"text/template"
@@ -117,15 +118,26 @@ func (h *DiscordHandler) GpwScraperWebhook(w http.ResponseWriter, r *http.Reques
 
 	h.l.Debug().Str("webhook-secret", string(webhookSecret))
 
+	defer r.Body.Close()
+
+	bodyBytes, err := io.ReadAll(r.Body)
+	if err != nil {
+		h.l.Error().Err(err).Msg(err.Error())
+		errors.InternalServerError(w, []byte(`{"error": "failed to read body}`))
+		return
+	}
+
+	h.l.Debug().Msg("request body " + string(bodyBytes))
+
+	r.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
+
 	webhookPayload := &GpwScraperWebhookData{}
 
-	defer r.Body.Close()
 	if err := json.NewDecoder(r.Body).Decode(webhookPayload); err != nil {
 		h.l.Error().Err(err).Msg(err.Error())
 		errors.UnprocessableEntity(w, []byte(`{"error": "json error"}`))
 		return
 	}
-	h.l.Debug().Int64("espi_ebi_id", int64(webhookPayload.Id))
 
 	if err := h.v.Struct(webhookPayload); err != nil {
 		h.l.Error().Err(err).Msg(err.Error())
