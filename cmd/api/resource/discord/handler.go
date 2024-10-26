@@ -139,14 +139,14 @@ func (h *DiscordHandler) GpwScraperWebhook(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	statusCode, responseBody, err := h.discordClient.SendMessage(h.apiConfig.GpwScraperWebhookDiscordChannelId, discordMsg)
+	statusCode, responseBody, err := h.discordClient.WebhookSendMessage(h.apiConfig.GpwScraperDiscordWebhookUrl, discordMsg)
 	if err != nil {
 		h.l.Error().Err(err).Int("discord-response-status-code", statusCode).Msg(err.Error())
 		errors.FailedDependency(w, []byte(`{"error": "error sending discord message"}`))
 		return
 	}
 
-	if statusCode != 200 {
+	if statusCode != 204 {
 		h.l.Error().Err(err).Int("discord-response-status-code", statusCode).Msg(responseBody)
 		errors.FailedDependency(w, []byte(`{"error":`+fmt.Sprintf(`"error (%d) sending discord message"}`, statusCode)))
 		return

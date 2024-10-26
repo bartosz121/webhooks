@@ -26,7 +26,7 @@ func main() {
 
 	val := validator.New(validator.WithRequiredStructEnabled())
 	c := config.New()
-	dc := http_client_discord.New(&c.Discord)
+	dc := http_client_discord.New()
 	l := NewLogger(c.Server.Debug)
 	discordHandler := discord.NewHandler(l, val, &c.Api, dc)
 

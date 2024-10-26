@@ -8,9 +8,8 @@ import (
 )
 
 type Config struct {
-	Server  ConfigServer
-	Api     ConfigApi
-	Discord ConfigDiscord
+	Server ConfigServer
+	Api    ConfigApi
 }
 
 type ConfigServer struct {
@@ -22,13 +21,8 @@ type ConfigServer struct {
 }
 
 type ConfigApi struct {
-	GpwScraperWebhookSecret           string `env:"GPW_SCRAPER_WEBHOOK_SECRET,required"`
-	GpwScraperWebhookDiscordChannelId string `env:"GPW_SCRAPER_WEBHOOK_DISCORD_CHANNEL_ID,required"`
-}
-
-type ConfigDiscord struct {
-	BaseUrl  string `env:"DISCORD_API_BASE_URL,required"`
-	BotToken string `env:"DISCORD_BOT_TOKEN,required"`
+	GpwScraperWebhookSecret     string `env:"GPW_SCRAPER_WEBHOOK_SECRET,required"`
+	GpwScraperDiscordWebhookUrl string `env:"GPW_SCRAPER_DISCROD_WEBHOOK_URL,required"`
 }
 
 func New() *Config {
